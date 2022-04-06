@@ -2,14 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
 using WebAPI.Models;
+using WebAPI.Models.Helpers;
+using WebAPI.Classes;
+using WebAPI.Interfaces;
 
 namespace WebAPI.Controllers
 {
@@ -18,73 +16,64 @@ namespace WebAPI.Controllers
     public class AsteroidsController : ControllerBase
     {
         private readonly IConfiguration _config;
+        private readonly IApiUrl _apiUrl;
+        private readonly IApiNeoFeedData _neoData;
+        private readonly ISearchHazardousAsteroids _searchHazardous;
+        private readonly IHelpers _helpers;
 
-        public AsteroidsController(IConfiguration config)
+        public AsteroidsController(IConfiguration config, IApiUrl apiUrl, IApiNeoFeedData neoData, ISearchHazardousAsteroids searchHazardous,
+                                   IHelpers helpers)
         {
             _config = config;
+            _apiUrl = apiUrl;
+            _neoData = neoData;
+            _searchHazardous = searchHazardous;
+            _helpers = helpers;
         }
+
         
         [HttpGet]
-        public ActionResult<IEnumerable<Asteroids>> GetAsteroids([FromQuery, BindRequired] string planet)
+        public ActionResult<IEnumerable<Asteroids>> GetAsteroids([FromQuery, BindRequired] string planet, [FromQuery] int days)
         {
             if (String.IsNullOrEmpty(HttpContext.Request.Query["planet"]))
             {
-                return BadRequest("Invalid planet request");
+                return BadRequest("Planet is required");
             }
 
-            planet = HttpContext.Request.Query["planet"];
+            string Days = _config.GetValue<string>("APINeoFeed:Days");
+            if (!String.IsNullOrEmpty(HttpContext.Request.Query["days"]))
+            {
+                if (int.Parse(HttpContext.Request.Query["days"]) > 7)
+                {
+                    return BadRequest("Max days 7");
+                } else
+                {
+                    Days = HttpContext.Request.Query["days"];
+                }
+                
+            }
+            
+            Dates dates = _helpers.getDatesFromToday(int.Parse(Days));
 
-            // DATES
-            DateTime Today = DateTime.Today;
-            DateTime Next7 = Today.AddDays(7);
+            List<Parameters> param = new List<Parameters>();
+            param.Add(new Parameters() { Key = "start_date", Value = dates.StartDate.ToString("yyyy-MM-dd") });
+            param.Add(new Parameters() { Key = "end_date", Value = dates.EndDate.ToString("yyyy-MM-dd") });
 
-            // URL
-            string Url = _config.GetValue<string>("API:Url");
-            string Key = _config.GetValue<string>("API:Key");
-            Url = Url + "?start_date=" + Today.ToString("yyyy-MM-dd") +  "&end_date=" + Next7.ToString("yyyy-MM-dd") + "&api_key=" + Key;
-
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(Url);
-            httpWebRequest.ContentType = "application/json";
-            httpWebRequest.Method = "GET";
+            string Url = _apiUrl.GetUrl("APINeoFeed", param);
 
             try
             {
-                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-                {
-                    var result = streamReader.ReadToEnd();
-                    JObject json = JObject.Parse(result);
-                    Neo data = JsonConvert.DeserializeObject<Neo>(result);
-                    List<Asteroids> list = new List<Asteroids>();
+                Neo data = _neoData.GetNeoFeedData(Url);
+                List<Asteroids> list = _searchHazardous.GetHazardousAsteroids(data.NearEarthObjects, planet);
+                List<Asteroids> asteroids = _searchHazardous.GetTopHazardousAsteroidsDiameter(list, 3);
 
-                    foreach (var item in data.NearEarthObjects) 
-                    {
-                        var hazardous = item.Value.Where(w => w.IsPotentiallyHazardousAsteroid.Equals(true)
-                                                      && w.CloseApproachData.Any(a => a.OrbitingBody.ToLower().Equals(planet))).ToList();
-                        foreach (var elem in hazardous)
-                        {
-                            Asteroids asteroids = new Asteroids();
-                            asteroids.Name = elem.Name;
-                            asteroids.Planet = elem.CloseApproachData.First().OrbitingBody;
-                            asteroids.Diameter = (elem.EstimatedDiameter.Kilometers.EstimatedDiameterMin + elem.EstimatedDiameter.Kilometers.EstimatedDiameterMax) / 2;
-                            asteroids.Velocity = elem.CloseApproachData.First().RelativeVelocity.KilometersPerHour;
-                            asteroids.Date = elem.CloseApproachData.First().CloseApproachDate;
-
-                            list.Add(asteroids);
-                        }
-                    }
-
-                    // LIST ASTEROIDS
-                    List<Asteroids> sizes = list.OrderByDescending(o => o.Diameter).Take(3).ToList();
-                    
-                    return Ok(sizes);
-
-                }
+                return Ok(asteroids);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Ok("error");
+                return StatusCode(500, ex.Message.ToString());
             }
+          
         }
     }
 }

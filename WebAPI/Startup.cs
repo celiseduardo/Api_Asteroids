@@ -16,6 +16,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using WebAPI.Interfaces;
+using WebAPI.Classes;
+
 
 namespace WebAPI
 {
@@ -42,6 +45,11 @@ namespace WebAPI
 
             services.AddControllersWithViews().AddNewtonsoftJson();
 
+            services.AddScoped<IApiUrl, UrlManager>();
+            services.AddScoped<IApiNeoFeedData, NeoFeedDataManager>();
+            services.AddScoped<ISearchHazardousAsteroids, SearchHazardousAsteroidsManager>();
+            services.AddScoped<IHelpers, Helpers>();
+
             services.AddMvc();
 
         }
@@ -58,7 +66,7 @@ namespace WebAPI
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API v1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Asteroids API v1");
 
             });
 

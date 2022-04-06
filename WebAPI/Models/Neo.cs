@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-
 namespace WebAPI.Models
 {     
     public class Neo

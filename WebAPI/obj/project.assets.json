@@ -9067,11 +9067,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\ProyectosWEB\\APIs\\WebAPI_respaldo\\WebAPI\\WebAPI\\WebAPI.csproj",
+      "projectUniqueName": "D:\\ProyectosWEB\\APIs\\WebAPI_respaldo_2\\WebAPI\\WebAPI\\WebAPI.csproj",
       "projectName": "WebAPI",
-      "projectPath": "D:\\ProyectosWEB\\APIs\\WebAPI_respaldo\\WebAPI\\WebAPI\\WebAPI.csproj",
+      "projectPath": "D:\\ProyectosWEB\\APIs\\WebAPI_respaldo_2\\WebAPI\\WebAPI\\WebAPI.csproj",
       "packagesPath": "C:\\Users\\Eduardo Celis\\.nuget\\packages\\",
-      "outputPath": "D:\\ProyectosWEB\\APIs\\WebAPI_respaldo\\WebAPI\\WebAPI\\obj\\",
+      "outputPath": "D:\\ProyectosWEB\\APIs\\WebAPI_respaldo_2\\WebAPI\\WebAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\ProyectosWEB\\APIs\\WebAPI_respaldo_2\\WebAPI\\WebAPI\\WebAPI.csproj": {}
+    "D:\\ProyectosWEB\\APIs\\WebAPI\\WebAPI\\WebAPI.csproj": {}
   },
   "projects": {
-    "D:\\ProyectosWEB\\APIs\\WebAPI_respaldo_2\\WebAPI\\WebAPI\\WebAPI.csproj": {
+    "D:\\ProyectosWEB\\APIs\\WebAPI\\WebAPI\\WebAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\ProyectosWEB\\APIs\\WebAPI_respaldo_2\\WebAPI\\WebAPI\\WebAPI.csproj",
+        "projectUniqueName": "D:\\ProyectosWEB\\APIs\\WebAPI\\WebAPI\\WebAPI.csproj",
         "projectName": "WebAPI",
-        "projectPath": "D:\\ProyectosWEB\\APIs\\WebAPI_respaldo_2\\WebAPI\\WebAPI\\WebAPI.csproj",
+        "projectPath": "D:\\ProyectosWEB\\APIs\\WebAPI\\WebAPI\\WebAPI.csproj",
         "packagesPath": "C:\\Users\\Eduardo Celis\\.nuget\\packages\\",
-        "outputPath": "D:\\ProyectosWEB\\APIs\\WebAPI_respaldo_2\\WebAPI\\WebAPI\\obj\\",
+        "outputPath": "D:\\ProyectosWEB\\APIs\\WebAPI\\WebAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -72,6 +72,10 @@
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
               "version": "[3.1.4, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.17.2, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

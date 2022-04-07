@@ -8,12 +8,13 @@ namespace WebAPI.Classes
 {
     public interface IHelpers
     {
-        Dates getDatesFromToday(int days);
+        Dates GetDatesFromToday(int days);
     }
     public class Helpers : IHelpers
     {
-        public Dates getDatesFromToday(int days)
+        public Dates GetDatesFromToday(int days = 7)
         {
+            
             DateTime Today = DateTime.Today;
             DateTime Today_NextDays = Today.AddDays(Convert.ToDouble(days));
 

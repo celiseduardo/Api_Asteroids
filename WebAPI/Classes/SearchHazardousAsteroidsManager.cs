@@ -18,12 +18,14 @@ namespace WebAPI.Classes
                                               && w.CloseApproachData.Any(a => a.OrbitingBody.ToLower().Equals(planet))).ToList();
                 foreach (var elem in hazardous)
                 {
-                    Asteroids asteroids = new Asteroids();
-                    asteroids.Name = elem.Name;
-                    asteroids.Planet = elem.CloseApproachData.First().OrbitingBody;
-                    asteroids.Diameter = (elem.EstimatedDiameter.Kilometers.EstimatedDiameterMin + elem.EstimatedDiameter.Kilometers.EstimatedDiameterMax) / 2;
-                    asteroids.Velocity = elem.CloseApproachData.First().RelativeVelocity.KilometersPerHour;
-                    asteroids.Date = elem.CloseApproachData.First().CloseApproachDate;
+                    Asteroids asteroids = new Asteroids
+                    {
+                        Name = elem.Name,
+                        Planet = elem.CloseApproachData.First().OrbitingBody,
+                        Diameter = (elem.EstimatedDiameter.Kilometers.EstimatedDiameterMin + elem.EstimatedDiameter.Kilometers.EstimatedDiameterMax) / 2,
+                        Velocity = elem.CloseApproachData.First().RelativeVelocity.KilometersPerHour,
+                        Date = elem.CloseApproachData.First().CloseApproachDate
+                    };
 
                     list.Add(asteroids);
                 }

@@ -2,8 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using WebAPI.Models;
 using WebAPI.Models.Helpers;
 using WebAPI.Classes;
@@ -35,29 +41,31 @@ namespace WebAPI.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Asteroids>> GetAsteroids([FromQuery, BindRequired] string planet, [FromQuery] int days)
         {
-            if (String.IsNullOrEmpty(HttpContext.Request.Query["planet"]))
+            if (String.IsNullOrEmpty(planet))
             {
                 return BadRequest("Planet is required");
             }
 
-            string Days = _config.GetValue<string>("APINeoFeed:Days");
-            if (!String.IsNullOrEmpty(HttpContext.Request.Query["days"]))
+            int Days = int.Parse(_config.GetValue<string>("APINeoFeed:Days"));
+            if (!String.IsNullOrEmpty(days.ToString()))
             {
-                if (int.Parse(HttpContext.Request.Query["days"]) > 7)
+                if (days > 7)
                 {
                     return BadRequest("Max days 7");
                 } else
                 {
-                    Days = HttpContext.Request.Query["days"];
+                    Days = days;
                 }
                 
             }
             
-            Dates dates = _helpers.getDatesFromToday(int.Parse(Days));
+            Dates dates = _helpers.GetDatesFromToday(Days);
 
-            List<Parameters> param = new List<Parameters>();
-            param.Add(new Parameters() { Key = "start_date", Value = dates.StartDate.ToString("yyyy-MM-dd") });
-            param.Add(new Parameters() { Key = "end_date", Value = dates.EndDate.ToString("yyyy-MM-dd") });
+            List<Parameters> param = new List<Parameters>
+            {
+                new Parameters() { Key = "start_date", Value = dates.StartDate.ToString("yyyy-MM-dd") },
+                new Parameters() { Key = "end_date", Value = dates.EndDate.ToString("yyyy-MM-dd") }
+            };
 
             string Url = _apiUrl.GetUrl("APINeoFeed", param);
 

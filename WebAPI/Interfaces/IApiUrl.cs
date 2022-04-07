@@ -8,6 +8,6 @@ namespace WebAPI.Interfaces
 {
     public interface IApiUrl
     {
-        string GetUrl(string api, List<Parameters> param, bool key = true);
+        string GetUrl(string ConfigKetApi, List<Parameters> param, bool key = true);
     }
 }

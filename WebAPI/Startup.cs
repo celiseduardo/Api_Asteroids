@@ -40,12 +40,12 @@ namespace WebAPI
             });
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MY WEB API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Asteroids API", Version = "v1" });
             });
 
             services.AddControllersWithViews().AddNewtonsoftJson();
 
-            services.AddScoped<IApiUrl, UrlManager>();
+            services.AddScoped<IApiUrl, UrlFeedDataManager>();
             services.AddScoped<IApiNeoFeedData, NeoFeedDataManager>();
             services.AddScoped<ISearchHazardousAsteroids, SearchHazardousAsteroidsManager>();
             services.AddScoped<IHelpers, Helpers>();
